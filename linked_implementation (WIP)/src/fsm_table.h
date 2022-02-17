@@ -13,47 +13,13 @@ The transition table is a 3-dimensional table, two input dimensions and one outp
 are the current state and the input symbol.
 */
 
-#ifndef FSM_H
-#define FSM_H
+#ifndef FSM_TABLE_H
+#define FSM_TABLE_H
 
-
-/* ----- Enumerations ----- */
-/* Enumerations for all implementations of FSMs */
-
-/*
-Generic return codes for any FSM functions.
-*/
-typedef enum {
-  FSM_NOT_IMPL = 4000,  // not implemented yet
-  FSM_OK,               // success
-  FSM_ALLOC_ERR,        // there was a problem allocating the necessary memory
-  FSM_SIZE_ERR,         // the size provided was invalid or impossible
-  FSM_NO_STATE,         // the state does not exist
-  FSM_NO_MACHINE        // the machine does not exist
-} FSM_STATUS;
-
-
-/*
-Codes for the type of a state.
-*/
-typedef enum {
-  START_STATE = 8000, // starting state for the machine
-  ACCEPT_STATE,       // an accepting state for the machine
-  NORMAL_STATE        // neither a start state or a accepting state
-} STATE_TYPE;
+#include "fsm.h"
 
 
 /* ----- Structures ----- */
-
-/*
-State.
-*/
-typedef struct {
-  unsigned int id;
-  STATE_TYPE type;
-  void (*action)(void);
-} State;
-
 
 /*
 Table implementation of a generic finite state machine.
@@ -77,7 +43,7 @@ typedef struct {
   // starting state
   State *Qs;
 
-} FSM;
+} FSM_table;
 
 
 /* ----- Public Function Prototypes ----- */
@@ -94,7 +60,7 @@ Returns:
   • if no State ID is in a field, a '-1' is printed instead.
   • if the transition table has not yet been allocated, prints an error message.
 */
-void printFSM(FSM *fsm);
+void printFSM(FSM_table *fsm);
 
 
 /*
@@ -114,7 +80,7 @@ Returns:
   • FSM_SIZE_ERR - either the number of states or number of symbols provided were 0.
   • FSM_NO_MACHINE - the machine pointer provided was null.
 */
-FSM_STATUS initFSM(FSM *fsm, unsigned int state_count, unsigned int symbol_count);
+FSM_STATUS initFSM_table(FSM_table *fsm, unsigned int state_count, unsigned int symbol_count);
 
 
 /*
@@ -134,7 +100,7 @@ Returns:
   • FSM_NO_STATE - if the state ID provided does not correspond to a state in the machine.
   • FSM_NO_MACHINE - the machine pointer provided was null.
 */
-FSM_STATUS confState(FSM *fsm, unsigned int state_id, STATE_TYPE designation, void (*action_fnc_ptr)(void));
+FSM_STATUS confState_table(FSM_table *fsm, unsigned int state_id, STATE_TYPE designation, void (*action_fnc_ptr)(void));
 
 
 /*
@@ -154,7 +120,7 @@ Returns:
   • FSM_SIZE_ERR - if the symbol is larger than the number of symbols set in the machine.
   • FSM_NO_MACHINE - the machine pointer provided was null.
 */
-FSM_STATUS addTrans(FSM *fsm, unsigned int from_state_id, unsigned int to_state_id, unsigned int symbol);
+FSM_STATUS addTrans_table(FSM_table *fsm, unsigned int from_state_id, unsigned int to_state_id, unsigned int symbol);
 
 
 /*
@@ -173,6 +139,6 @@ Returns:
   • FSM_SIZE_ERR - if the symbol is larger than the number of symbols set in the machine.
   • FSM_NO_MACHINE - the machine pointer provided was null.
 */
-FSM_STATUS remTrans(FSM *fsm, unsigned int from_state_id, unsigned int symbol);
+FSM_STATUS remTrans_table(FSM_table *fsm, unsigned int from_state_id, unsigned int symbol);
 
 #endif

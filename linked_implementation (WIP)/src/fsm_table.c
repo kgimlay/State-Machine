@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "fsm.h"
+#include "fsm_table.h"
 
 /* ----- Private Function Prototypes ----- */
 
@@ -14,7 +14,7 @@
 Print Transition Table
 For debugging use!
 */
-void printFSM(FSM *fsm) {
+void printFSM(FSM_table *fsm) {
   // check that fsm exists
   if (fsm == NULL) {
     printf("FSM provided is NULL!\n");
@@ -47,7 +47,7 @@ void printFSM(FSM *fsm) {
     for (int j = 0; j < fsm->Ec; j++) {
       if (fsm->D[i*fsm->Ec+j] == NULL) {
         strcat(temp_row, "| %c ");
-        sprintf(temp_row, temp_row, '-');
+        sprintf(temp_row, temp_row, '.');
       }
       else {
         strcat(temp_row, "| %d ");
@@ -69,7 +69,7 @@ Actions:
   • set the starting state to NULL
   • set count of states and symbols to 0
 */
-FSM_STATUS initFSM(FSM *fsm, unsigned int state_count, unsigned int symbol_count) {
+FSM_STATUS initFSM_table(FSM_table *fsm, unsigned int state_count, unsigned int symbol_count) {
   // validate inputs
   if (fsm == NULL)
     return FSM_NO_MACHINE;
@@ -92,7 +92,7 @@ FSM_STATUS initFSM(FSM *fsm, unsigned int state_count, unsigned int symbol_count
   for (int i = 0; i < state_count; i++) {
     State temp_state;
     temp_state.id = i;
-    temp_state.type = NORMAL_STATE;
+    temp_state.type = STATE_NORMAL;
     temp_state.action = NULL;
     fsm->Q[i] = temp_state;
     // printf("%d Func Ptr: %d\n", temp_state.id, temp_state.action);
@@ -111,12 +111,10 @@ Actions:
   • sets designation, setting appropriate stuff in fsm if needed
   • sets action function pointer
 */
-FSM_STATUS confState(FSM *fsm, unsigned int state_id, STATE_TYPE designation, void (*action_fnc_ptr)(void)) {
+FSM_STATUS confState_table(FSM_table *fsm, unsigned int state_id, STATE_TYPE designation, void (*action_fnc_ptr)(void)) {
   // validate inputs
   if (fsm == NULL)
     return FSM_NO_MACHINE;
-  if (state_id >= fsm->Qc)
-    return FSM_NO_STATE;
 
   // set designation and action
   fsm->Q[state_id].type = designation;
@@ -124,7 +122,7 @@ FSM_STATUS confState(FSM *fsm, unsigned int state_id, STATE_TYPE designation, vo
   // printf("%d Func Ptr: %u\n", fsm->Q[state_id].id, fsm->Q[state_id].action);
 
   // set machine start if needed
-  if (designation == START_STATE)
+  if (designation == STATE_START)
     fsm->Qs = &(fsm->Q[state_id]);
 
   // successful
@@ -138,7 +136,7 @@ Actions:
   • find location in transition table from given from state and symbol
   • put pointer of to-state in location
 */
-FSM_STATUS addTrans(FSM *fsm, unsigned int from_state_id, unsigned int to_state_id, unsigned int symbol) {
+FSM_STATUS addTrans_table(FSM_table *fsm, unsigned int from_state_id, unsigned int to_state_id, unsigned int symbol) {
   // validate inputs
   if (fsm == NULL)
     return FSM_NO_MACHINE;
@@ -161,7 +159,7 @@ Actions:
   • find location in transition table from given from state and symbol
   • remove pointer of to-state in location
 */
-FSM_STATUS remTrans(FSM *fsm, unsigned int from_state_id, unsigned int symbol) {
+FSM_STATUS remTrans_table(FSM_table *fsm, unsigned int from_state_id, unsigned int symbol) {
   // validate inputs
   if (fsm == NULL)
     return FSM_NO_MACHINE;
