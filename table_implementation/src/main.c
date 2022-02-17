@@ -167,7 +167,7 @@ void temp_im_state() {
 /*
  *
  */
-bool createStateMachine(FSM *state_machine, Interpreter *interpreter) {
+void createStateMachine(FSM *state_machine, Interpreter *interpreter) {
   // instantiate state machine
 	initFSM(state_machine, NUM_STATES, NUM_SYMBOLS);
 
@@ -227,8 +227,6 @@ bool createStateMachine(FSM *state_machine, Interpreter *interpreter) {
 
 	// instantiate state machine interpreter
   initInterpreter(interpreter, state_machine);
-
-  return true;
 }
 
 
